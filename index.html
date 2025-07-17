@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Language Translator</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #f9fafb;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --hover-color: #4338ca;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .description {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .translator-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .language-selector {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+        }
+
+        .language-selector select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .swap-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-areas {
+            display: flex;
+        }
+
+        .text-area-container {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .text-area-container h3 {
+            margin-top: 0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            resize: vertical;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--hover-color);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f0f0ff;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ef4444;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Language Translator</h1>
+            <p class="description">Powered by Groq's LLM for accurate multilingual translations</p>
+        </header>
+
+        <div class="translator-container">
+            <div class="language-selector">
+                <select id="sourceLanguage">
+                    <option value="bn">Bangla</option>
+                    <option value="en" selected>English</option>
+                    <option value="ar">Arabic</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                
+                <button class="swap-btn" id="swapLanguages" title="Swap languages">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                    </svg>
+                </button>
+                
+                <select id="targetLanguage">
+                    <option value="bn" selected>Bangla</option>
+                    <option value="en">English</option>
+                    <option value="ar">Arabic</option>
+                    <option value="hi">Hindi</option>
+                </select>
+            </div>
+
+            <div class="text-areas">
+                <div class="text-area-container">
+                    <h3>Original Text</h3>
+                    <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
+                </div>
+                <div class="text-area-container">
+                    <h3>Translation</h3>
+                    <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div>
+                    <button class="btn btn-secondary" id="clearText">Clear</button>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="translateBtn">Translate</button>
+                    <button class="btn btn-secondary" id="downloadPdf">Download as PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Using Groq's LLM for high-quality translations that understand context</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sourceLanguage = document.getElementById('sourceLanguage');
+            const targetLanguage = document.getElementById('targetLanguage');
+            const swapBtn = document.getElementById('swapLanguages');
+            const sourceText = document.getElementById('sourceText');
+            const targetText = document.getElementById('targetText');
+            const translateBtn = document.getElementById('translateBtn');
+            const clearBtn = document.getElementById('clearText');
+            const downloadPdfBtn = document.getElementById('downloadPdf');
+
+            // Language names mapping
+            const languageNames = {
+                'bn': 'Bangla',
+                'en': 'English',
+                'ar': 'Arabic',
+                'hi': 'Hindi'
+            };
+
+            // Swap languages
+            swapBtn.addEventListener('click', function() {
+                const temp = sourceLanguage.value;
+                sourceLanguage.value = targetLanguage.value;
+                targetLanguage.value = temp;
+                
+                // Also swap text if there's content
+                if (sourceText.value || targetText.value) {
+                    const tempText = sourceText.value;
+                    sourceText.value = targetText.value;
+                    targetText.value = tempText;
+                }
+            });
+
+            // Clear text
+            clearBtn.addEventListener('click', function() {
+                sourceText.value = '';
+                targetText.value = '';
+            });
+
+            // Translate text
+            translateBtn.addEventListener('click', async function() {
+                const text = sourceText.value.trim();
+                if (!text) {
+                    alert('Please enter text to translate');
+                    return;
+                }
+
+                const fromLang = sourceLanguage.value;
+                const toLang = targetLanguage.value;
+
+                if (fromLang === toLang) {
+                    alert('Source and target languages cannot be the same');
+                    return;
+                }
+
+                translateBtn.disabled = true;
+                translateBtn.innerHTML = 'Translating <span class="loading"></span>';
+
+                try {
+                    const translation = await translateText(text, fromLang, toLang);
+                    targetText.value = translation;
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    alert('Translation failed. Please try again.');
+                } finally {
+                    translateBtn.disabled = false;
+                    translateBtn.textContent = 'Translate';
+                }
+            });
+
+            // Download as PDF
+            downloadPdfBtn.addEventListener('click', function() {
+                if (!targetText.value.trim()) {
+                    alert('No translation to download');
+                    return;
+                }
+
+                const fromLang = languageNames[sourceLanguage.value];
+                const toLang = languageNames[targetLanguage.value];
+                
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(18);
+                doc.text(`Translation from ${fromLang} to ${toLang}`, 10, 15);
+                
+                // Add original text
+                doc.setFontSize(12);
+                doc.text(`Original Text (${fromLang}):`, 10, 30);
+                doc.text(sourceText.value, 10, 40, { maxWidth: 180 });
+                
+                // Add translation
+                doc.text(`Translation (${toLang}):`, 10, doc.autoTable.previous.finalY + 15);
+                doc.text(targetText.value, 10, doc.autoTable.previous.finalY + 25, { maxWidth: 180 });
+                
+                // Save the PDF
+                doc.save(`translation_${fromLang}_to_${toLang}.pdf`);
+            });
+
+            // Function to call the Netlify function for translation
+            async function translateText(text, fromLang, toLang) {
+                const response = await fetch('/.netlify/functions/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text,
+                        fromLang,
+                        toLang
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.translation;
+            }
+        });
+    </script>
+</body>
+</html>
