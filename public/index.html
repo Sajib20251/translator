@@ -28,6 +28,18 @@
             padding: 2rem;
         }
 
+        nav {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
         header {
             text-align: center;
             margin-bottom: 2rem;
@@ -173,6 +185,9 @@
 <body>
     <div class="container">
         <header>
+            <nav>
+                <a href="/index.html">Translator</a> | <a href="/quiz.html">Quiz Generator</a>
+            </nav>
             <h1>AI Language Translator</h1>
             <p class="description">Powered by Groq's LLM for accurate multilingual translations</p>
         </header>
