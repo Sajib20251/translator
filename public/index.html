@@ -4,141 +4,285 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Language Translator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #f9fafb;
-            --text-color: #1f2937;
-            --border-color: #e5e7eb;
-            --hover-color: #4338ca;
+            /* Aesthetic Palette */
+            --bg-deep: #050505;
+            --bg-glass: rgba(20, 20, 25, 0.6);
+            --bg-input: #0a0a0a;
+            
+            --primary-gradient: linear-gradient(135deg, #7c3aed, #2563eb);
+            --accent-glow: rgba(124, 58, 237, 0.5);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.5;
-            color: var(--text-color);
-            background-color: #f3f4f6;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Ambient Background Glow */
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(37, 99, 235, 0.15) 0%, transparent 40%);
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 900px;
             padding: 2rem;
+            position: relative;
+            z-index: 10;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
 
         .description {
-            color: #6b7280;
-            margin-bottom: 2rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 300;
         }
 
+        /* Main Glass Card */
         .translator-container {
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
+        /* Top Bar */
         .language-selector {
             display: flex;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--secondary-color);
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .language-selector select {
+        /* Custom Select Styling */
+        .select-wrapper {
+            position: relative;
             flex: 1;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.25rem;
-            margin: 0 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            appearance: none;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-family: inherit;
             font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            border-color: rgba(255,255,255,0.2);
+            background-color: #121212;
+        }
+
+        select:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
         }
 
         .swap-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--primary-color);
-            font-size: 1.2rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 1rem;
+            transition: all 0.3s ease;
         }
 
+        .swap-btn:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: rotate(180deg);
+        }
+
+        /* Text Input Area */
         .text-areas {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 300px;
         }
 
         .text-area-container {
-            flex: 1;
-            padding: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-subtle);
+            position: relative;
         }
 
-        .text-area-container h3 {
-            margin-top: 0;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #6b7280;
+        .text-area-container:last-child {
+            border-right: none;
+            background: rgba(0,0,0,0.2); /* Slightly darker for output */
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .label-row h3 {
+            margin: 0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7c3aed;
+            font-weight: 700;
         }
 
         textarea {
             width: 100%;
-            min-height: 200px;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.375rem;
-            resize: vertical;
-            font-size: 1rem;
-            line-height: 1.5;
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: none;
         }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--secondary-color);
+        textarea::placeholder {
+            color: rgba(255,255,255,0.2);
         }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
+        /* Scrollbar styling */
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s;
         }
 
-        .btn-primary {
-            background-color: var(--primary-color);
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.1);
             color: white;
+        }
+
+        .copy-btn.success {
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        /* Bottom Controls */
+        .controls {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between; /* Changed to space-between to match original */
+            align-items: center;
+            gap: 1rem;
+            border-top: 1px solid var(--border-subtle);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             border: none;
         }
 
-        .btn-primary:hover {
-            background-color: var(--hover-color);
-        }
-
         .btn-secondary {
-            background-color: white;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
         }
 
         .btn-secondary:hover {
-            background-color: #f0f0ff;
+            color: white;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 25px rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         .loading {
@@ -152,25 +296,30 @@
             margin-left: 0.5rem;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .error {
-            color: #ef4444;
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .language-selector { flex-direction: column; gap: 1rem; }
+            .swap-btn { transform: rotate(90deg); margin: 0.5rem 0; }
+            .swap-btn:hover { transform: rotate(270deg); }
+            .text-areas { grid-template-columns: 1fr; }
+            .text-area-container { border-right: none; border-bottom: 1px solid var(--border-subtle); min-height: 200px; }
+            .controls { flex-direction: column-reverse; }
+            .btn { width: 100%; }
         }
-
+        
         footer {
             text-align: center;
             margin-top: 2rem;
-            color: #6b7280;
+            color: var(--text-muted);
             font-size: 0.875rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
         <header>
             <h1>AI Language Translator</h1>
@@ -179,13 +328,15 @@
 
         <div class="translator-container">
             <div class="language-selector">
-                <select id="sourceLanguage">
-                    <option value="bn">Bangla</option>
-                    <option value="en" selected>English</option>
-                    <option value="ar">Arabic</option>
-                    <option value="hi">Hindi</option>
-                </select>
-                
+                <div class="select-wrapper">
+                    <select id="sourceLanguage">
+                        <option value="bn">Bangla</option>
+                        <option value="en" selected>English</option>
+                        <option value="ar">Arabic</option>
+                        <option value="hi">Hindi</option>
+                    </select>
+                </div>
+
                 <button class="swap-btn" id="swapLanguages" title="Swap languages">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="17 1 21 5 17 9"></polyline>
@@ -194,22 +345,35 @@
                         <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
                     </svg>
                 </button>
-                
-                <select id="targetLanguage">
-                    <option value="bn" selected>Bangla</option>
-                    <option value="en">English</option>
-                    <option value="ar">Arabic</option>
-                    <option value="hi">Hindi</option>
-                </select>
+
+                <div class="select-wrapper">
+                    <select id="targetLanguage">
+                        <option value="bn" selected>Bangla</option>
+                        <option value="en">English</option>
+                        <option value="ar">Arabic</option>
+                        <option value="hi">Hindi</option>
+                    </select>
+                </div>
             </div>
 
             <div class="text-areas">
                 <div class="text-area-container">
-                    <h3>Original Text</h3>
+                    <div class="label-row">
+                        <h3>Original Text</h3>
+                    </div>
                     <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
                 </div>
+
                 <div class="text-area-container">
-                    <h3>Translation</h3>
+                    <div class="label-row">
+                        <h3>Translation</h3>
+                        <button class="copy-btn" id="copyBtn" title="Copy to Clipboard">
+                            <span class="icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </span>
+                            <span class="text">Copy</span>
+                        </button>
+                    </div>
                     <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
                 </div>
             </div>
@@ -218,13 +382,13 @@
                 <div>
                     <button class="btn btn-secondary" id="clearText">Clear</button>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px; width: 100%; justify-content: flex-end;">
+                     <button class="btn btn-secondary" id="downloadPdf">Download PDF</button>
                     <button class="btn btn-primary" id="translateBtn">Translate</button>
-                    <button class="btn btn-secondary" id="downloadPdf">Download as PDF</button>
                 </div>
             </div>
         </div>
-
+        
         <footer>
             <p>Using Groq's LLM for high-quality translations that understand context</p>
         </footer>
@@ -232,10 +396,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // Initialize jsPDF
         const { jsPDF } = window.jspdf;
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Elements
             const sourceLanguage = document.getElementById('sourceLanguage');
             const targetLanguage = document.getElementById('targetLanguage');
             const swapBtn = document.getElementById('swapLanguages');
@@ -244,8 +408,9 @@
             const translateBtn = document.getElementById('translateBtn');
             const clearBtn = document.getElementById('clearText');
             const downloadPdfBtn = document.getElementById('downloadPdf');
+            const copyBtn = document.getElementById('copyBtn');
 
-            // Language names mapping
+            // Language names mapping (Restored Original)
             const languageNames = {
                 'bn': 'Bangla',
                 'en': 'English',
@@ -253,7 +418,7 @@
                 'hi': 'Hindi'
             };
 
-            // Swap languages
+            // Swap Logic
             swapBtn.addEventListener('click', function() {
                 const temp = sourceLanguage.value;
                 sourceLanguage.value = targetLanguage.value;
@@ -267,13 +432,38 @@
                 }
             });
 
-            // Clear text
+            // Copy to Clipboard Logic (New Feature)
+            copyBtn.addEventListener('click', () => {
+                if(!targetText.value) return;
+
+                navigator.clipboard.writeText(targetText.value).then(() => {
+                    const originalHtml = copyBtn.innerHTML;
+                    
+                    // Change style to indicate success
+                    copyBtn.classList.add('success');
+                    copyBtn.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span class="text">Copied!</span>
+                    `;
+
+                    // Revert after 2 seconds
+                    setTimeout(() => {
+                        copyBtn.classList.remove('success');
+                        copyBtn.innerHTML = originalHtml;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            });
+
+            // Clear Text
             clearBtn.addEventListener('click', function() {
                 sourceText.value = '';
                 targetText.value = '';
+                sourceText.focus();
             });
 
-            // Translate text
+            // Translate Text (Original Fetch Logic Restored)
             translateBtn.addEventListener('click', async function() {
                 const text = sourceText.value.trim();
                 if (!text) {
@@ -290,6 +480,7 @@
                 }
 
                 translateBtn.disabled = true;
+                const originalBtnText = translateBtn.innerHTML;
                 translateBtn.innerHTML = 'Translating <span class="loading"></span>';
 
                 try {
@@ -300,11 +491,11 @@
                     alert('Translation failed. Please try again.');
                 } finally {
                     translateBtn.disabled = false;
-                    translateBtn.textContent = 'Translate';
+                    translateBtn.innerHTML = 'Translate';
                 }
             });
 
-            // Download as PDF
+            // Download PDF
             downloadPdfBtn.addEventListener('click', function() {
                 if (!targetText.value.trim()) {
                     alert('No translation to download');
@@ -326,14 +517,24 @@
                 doc.text(sourceText.value, 10, 40, { maxWidth: 180 });
                 
                 // Add translation
-                doc.text(`Translation (${toLang}):`, 10, doc.autoTable.previous.finalY + 15);
-                doc.text(targetText.value, 10, doc.autoTable.previous.finalY + 25, { maxWidth: 180 });
+                // Simple auto-positioning for demo
+                let yPos = 80;
+                try {
+                    // Try to calculate position if autotable isn't present, 
+                    // or just use fixed position for simplicity in this snippet
+                    if (doc.autoTable && doc.autoTable.previous) {
+                         yPos = doc.autoTable.previous.finalY + 15;
+                    }
+                } catch(e) {}
+
+                doc.text(`Translation (${toLang}):`, 10, yPos);
+                doc.text(targetText.value, 10, yPos + 10, { maxWidth: 180 });
                 
                 // Save the PDF
                 doc.save(`translation_${fromLang}_to_${toLang}.pdf`);
             });
 
-            // Function to call the Netlify function for translation
+            // Function to call the Netlify function for translation (Original Logic)
             async function translateText(text, fromLang, toLang) {
                 const response = await fetch('/.netlify/functions/translate', {
                     method: 'POST',
