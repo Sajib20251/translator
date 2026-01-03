@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
         Preserve the meaning, tone, and cultural context accurately. 
         Do not add any additional explanations or notes, just provide the translation.
         
-        Text to translate: "${text}"`;
+        Text to translate: ${text}`;
 
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
