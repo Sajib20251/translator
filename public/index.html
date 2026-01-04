@@ -7,20 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* Updated theme: modern dark glassmorphism (purple -> white) */
         :root {
-            /* Aesthetic Palette */
-            --bg-deep: #050505;
-            --bg-glass: rgba(20, 20, 25, 0.6);
-            --bg-input: #0a0a0a;
-            
-            --primary-gradient: linear-gradient(135deg, #7c3aed, #2563eb);
-            --accent-glow: rgba(124, 58, 237, 0.5);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            
+            --bg-deep: #000000;
+            --grid-color: rgba(255,255,255,0.03);
+            --card-bg: rgba(255,255,255,0.04);
+            --card-border: rgba(255,255,255,0.06);
+            --primary-gradient: linear-gradient(135deg, #ffffff, #e6e6e6);
+            --accent-glow: rgba(255, 255, 255, 0.30);
             --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            
+            --text-muted: #9ca3af;
             --radius: 16px;
+
+            /* ADDED: input background and subtle border for selects & controls */
+            --bg-input: rgba(255,255,255,0.02);
+            --border-subtle: rgba(255,255,255,0.06);
         }
 
         * {
@@ -38,10 +39,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Ambient Background Glow */
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 85% 90%, rgba(37, 99, 235, 0.15) 0%, transparent 40%);
+
+            /* subtle grid overlay + ambient radial glows */
+            background-image:
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(0deg, var(--grid-color) 1px, transparent 1px),
+                /* radial glows now white-tinted */
+                radial-gradient(circle at 15% 10%, rgba(255,255,255,0.04) 0%, transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(255,255,255,0.02) 0%, transparent 40%);
+            background-size: 28px 28px, 28px 28px, cover, cover;
         }
 
         .container {
@@ -50,6 +56,9 @@
             padding: 2rem;
             position: relative;
             z-index: 10;
+
+            /* Move page content slightly up */
+            transform: translateY(-24px); /* move everything a little bit up */
         }
 
         header {
@@ -66,6 +75,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(255,255,255,0.1);
+            color: var(--text-main);
         }
 
         .description {
@@ -77,12 +87,14 @@
 
         /* Main Glass Card */
         .translator-container {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
+            position: relative; /* ADDED: allow absolute children (top link) */
+
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(2,6,23,0.7); /* soft dark shadow */
             overflow: hidden;
             transition: transform 0.3s ease;
         }
@@ -94,36 +106,84 @@
             align-items: center;
             padding: 1.5rem;
             border-bottom: 1px solid var(--border-subtle);
+            gap: 1rem; /* improved spacing for selects */
         }
 
-        /* Custom Select Styling */
+        /* Prefer dark native widgets where supported */
+        html, body {
+            color-scheme: dark;
+        }
+
+        /* Custom Select Styling (enhanced) */
         .select-wrapper {
             position: relative;
             flex: 1;
+            min-width: 120px;
+        }
+
+        /* decorative chevron and subtle outline */
+        .select-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            transform: translateY(-40%) rotate(45deg);
+            border-right: 2px solid rgba(255,255,255,0.7);
+            border-bottom: 2px solid rgba(255,255,255,0.7);
+            opacity: 0.9;
         }
 
         select {
             width: 100%;
-            appearance: none;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
             background-color: var(--bg-input);
             color: var(--text-main);
             border: 1px solid var(--border-subtle);
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 2.75rem 0.9rem 1rem; /* room for chevron */
             border-radius: 12px;
             font-family: inherit;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.18s ease;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 3px 10px rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            /* hint UAs to render dropdown dark */
+            color-scheme: dark;
+            background-clip: padding-box;
         }
 
+        /* hover state stronger border for clarity */
         select:hover {
-            border-color: rgba(255,255,255,0.2);
-            background-color: #121212;
+            border-color: rgba(255,255,255,0.18);
+            background-color: rgba(255,255,255,0.02);
         }
 
+        /* focused state with subtle dark outline (less white wash) */
         select:focus {
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+            border-color: rgba(255,255,255,0.14);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.02);
+            outline: none;
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        /* remove native dropdown arrow in IE/Edge */
+        select::-ms-expand { display: none; }
+
+        /* best-effort option styling for UAs that allow it */
+        select option {
+            color: #fff;
+            background-color: #0b0b0b;
+        }
+
+        /* Also ensure the opened native popup inherits dark where supported */
+        /* some browsers support this */
+        select:focus, select::-webkit-picker-indicator {
+            color-scheme: dark;
         }
 
         .swap-btn {
@@ -144,8 +204,8 @@
         .swap-btn:hover {
             background: var(--primary-gradient);
             border-color: transparent;
-            color: white;
-            box-shadow: 0 0 15px var(--accent-glow);
+            color: #000; /* keep icon visible on white bg */
+            box-shadow: 0 0 18px var(--accent-glow);
             transform: rotate(180deg);
         }
 
@@ -181,7 +241,8 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #7c3aed;
+            /* changed to white */
+            color: #ffffff;
             font-weight: 700;
         }
 
@@ -271,13 +332,14 @@
         }
 
         .btn-primary {
+            /* primary now white gradient (text remains visible) */
             background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.08);
         }
 
         .btn-primary:hover {
-            box-shadow: 0 4px 25px rgba(124, 58, 237, 0.5);
+            box-shadow: 0 6px 30px rgba(255,255,255,0.12);
             transform: translateY(-2px);
         }
 
@@ -316,9 +378,43 @@
             font-size: 0.875rem;
             opacity: 0.7;
         }
+
+        /* Small nav link for Grammar Fixer (common styles already present) */
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+            color: var(--text-muted);
+        }
+
+        /* Fixed top-right page corner link */
+        .nav-link.page-corner {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 9999;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            transition: transform .15s ease, background .15s ease;
+        }
+
+        .nav-link.page-corner:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-main);
+            border-color: rgba(255,255,255,0.08);
+        }
     </style>
 </head>
 <body>
+
+    <!-- moved: fixed clickable Grammar Fixer link in page corner -->
+    <a href="grammerfixer.html" class="nav-link page-corner" title="Open Grammar Fixer">Grammar Fixer</a>
 
     <div class="container">
         <header>
