@@ -101,6 +101,10 @@
             width: 100%;
             margin-top: 1.5rem;
             transition: background-color 0.12s, transform 0.06s, border-color 0.12s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         button:hover {
@@ -117,6 +121,19 @@
             background-color: rgba(255,255,255,0.01);
             cursor: not-allowed;
             opacity: 0.7;
+        }
+
+        /* Specific style for copy button */
+        #copyBtn {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 10px;
+            border-style: dashed;
+            opacity: 0.8;
+        }
+        #copyBtn:hover {
+            opacity: 1;
+            border-style: solid;
         }
 
         .output-group {
@@ -153,6 +170,11 @@
         <div class="output-group">
             <label for="outputText">Corrected Version:</label>
             <textarea id="outputText" rows="5" readonly placeholder="Result will appear here..."></textarea>
+            
+            <button id="copyBtn" onclick="copyToClipboard()" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy to Clipboard
+            </button>
         </div>
     </div>
 
@@ -162,6 +184,7 @@
             const outputBox = document.getElementById('outputText');
             const statusBox = document.getElementById('status');
             const btn = document.getElementById('fixBtn');
+            const copyBtn = document.getElementById('copyBtn');
 
             // Validation
             if (!input.trim()) {
@@ -174,11 +197,10 @@
             btn.disabled = true;
             btn.textContent = "Fixing...";
             outputBox.value = "";
+            copyBtn.disabled = true; // Disable copy while loading
             statusBox.textContent = "";
 
             try {
-                // Call the Netlify Function
-                // Note: If running locally with 'netlify dev', the port is usually 8888
                 const response = await fetch('/.netlify/functions/grammar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -195,6 +217,7 @@
                 outputBox.value = data.corrected;
                 statusBox.textContent = "Text corrected successfully!";
                 statusBox.className = "status success";
+                copyBtn.disabled = false; // Enable copy button
 
             } catch (error) {
                 console.error(error);
@@ -204,6 +227,33 @@
                 // Restore Button
                 btn.disabled = false;
                 btn.textContent = "Fix My Grammar";
+            }
+        }
+
+        // NEW: Copy Functionality
+        async function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            const copyBtn = document.getElementById('copyBtn');
+            const originalText = copyBtn.innerHTML;
+
+            if (!outputText.value) return;
+
+            try {
+                await navigator.clipboard.writeText(outputText.value);
+                
+                // Visual Feedback
+                copyBtn.textContent = "Copied!";
+                copyBtn.style.borderColor = "var(--success-bg)";
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.style.borderColor = "var(--border)";
+                }, 2000);
+
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                copyBtn.textContent = "Failed to copy";
             }
         }
     </script>
