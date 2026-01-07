@@ -18,8 +18,6 @@
             --text-main: #ffffff;
             --text-muted: #9ca3af;
             --radius: 16px;
-
-            /* ADDED: input background and subtle border for selects & controls */
             --bg-input: rgba(255,255,255,0.02);
             --border-subtle: rgba(255,255,255,0.06);
         }
@@ -37,18 +35,53 @@
             padding: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column; /* Changed for mobile stacking */
             align-items: center;
             justify-content: center;
 
-            /* subtle grid overlay + ambient radial glows */
             background-image:
                 linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
                 linear-gradient(0deg, var(--grid-color) 1px, transparent 1px),
-                /* radial glows now white-tinted */
                 radial-gradient(circle at 15% 10%, rgba(255,255,255,0.04) 0%, transparent 40%),
                 radial-gradient(circle at 85% 90%, rgba(255,255,255,0.02) 0%, transparent 40%);
             background-size: 28px 28px, 28px 28px, cover, cover;
         }
+
+        /* --- NEW NAVIGATION STYLES --- */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 30px; /* Pill shape */
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        /* ----------------------------- */
 
         .container {
             width: 100%;
@@ -56,9 +89,7 @@
             padding: 2rem;
             position: relative;
             z-index: 10;
-
-            /* Move page content slightly up */
-            transform: translateY(-24px); /* move everything a little bit up */
+            transform: translateY(-10px); 
         }
 
         header {
@@ -85,43 +116,37 @@
             font-weight: 300;
         }
 
-        /* Main Glass Card */
         .translator-container {
-            position: relative; /* ADDED: allow absolute children (top link) */
-
+            position: relative;
             background: var(--card-bg);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            box-shadow: 0 8px 30px rgba(2,6,23,0.7); /* soft dark shadow */
+            box-shadow: 0 8px 30px rgba(2,6,23,0.7);
             overflow: hidden;
             transition: transform 0.3s ease;
         }
 
-        /* Top Bar */
         .language-selector {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem;
             border-bottom: 1px solid var(--border-subtle);
-            gap: 1rem; /* improved spacing for selects */
+            gap: 1rem;
         }
 
-        /* Prefer dark native widgets where supported */
         html, body {
             color-scheme: dark;
         }
 
-        /* Custom Select Styling (enhanced) */
         .select-wrapper {
             position: relative;
             flex: 1;
             min-width: 120px;
         }
 
-        /* decorative chevron and subtle outline */
         .select-wrapper::after {
             content: "";
             position: absolute;
@@ -139,12 +164,10 @@
         select {
             width: 100%;
             appearance: none !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
             background-color: var(--bg-input);
             color: var(--text-main);
             border: 1px solid var(--border-subtle);
-            padding: 0.9rem 2.75rem 0.9rem 1rem; /* room for chevron */
+            padding: 0.9rem 2.75rem 0.9rem 1rem;
             border-radius: 12px;
             font-family: inherit;
             font-size: 1rem;
@@ -152,18 +175,15 @@
             transition: all 0.18s ease;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 3px 10px rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
-            /* hint UAs to render dropdown dark */
             color-scheme: dark;
             background-clip: padding-box;
         }
 
-        /* hover state stronger border for clarity */
         select:hover {
             border-color: rgba(255,255,255,0.18);
             background-color: rgba(255,255,255,0.02);
         }
 
-        /* focused state with subtle dark outline (less white wash) */
         select:focus {
             border-color: rgba(255,255,255,0.14);
             box-shadow: 0 0 0 3px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.02);
@@ -171,19 +191,11 @@
             background-color: rgba(255,255,255,0.02);
         }
 
-        /* remove native dropdown arrow in IE/Edge */
         select::-ms-expand { display: none; }
 
-        /* best-effort option styling for UAs that allow it */
         select option {
             color: #fff;
             background-color: #0b0b0b;
-        }
-
-        /* Also ensure the opened native popup inherits dark where supported */
-        /* some browsers support this */
-        select:focus, select::-webkit-picker-indicator {
-            color-scheme: dark;
         }
 
         .swap-btn {
@@ -204,12 +216,11 @@
         .swap-btn:hover {
             background: var(--primary-gradient);
             border-color: transparent;
-            color: #000; /* keep icon visible on white bg */
+            color: #000;
             box-shadow: 0 0 18px var(--accent-glow);
             transform: rotate(180deg);
         }
 
-        /* Text Input Area */
         .text-areas {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -226,7 +237,7 @@
 
         .text-area-container:last-child {
             border-right: none;
-            background: rgba(0,0,0,0.2); /* Slightly darker for output */
+            background: rgba(0,0,0,0.2);
         }
 
         .label-row {
@@ -241,7 +252,6 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            /* changed to white */
             color: #ffffff;
             font-weight: 700;
         }
@@ -262,7 +272,6 @@
             color: rgba(255,255,255,0.2);
         }
 
-        /* Scrollbar styling */
         textarea::-webkit-scrollbar {
             width: 6px;
         }
@@ -271,7 +280,6 @@
             border-radius: 3px;
         }
 
-        /* Copy Button */
         .copy-btn {
             background: rgba(255,255,255,0.05);
             border: none;
@@ -296,11 +304,10 @@
             background: rgba(74, 222, 128, 0.1);
         }
 
-        /* Bottom Controls */
         .controls {
             padding: 1.5rem;
             display: flex;
-            justify-content: space-between; /* Changed to space-between to match original */
+            justify-content: space-between;
             align-items: center;
             gap: 1rem;
             border-top: 1px solid var(--border-subtle);
@@ -332,7 +339,6 @@
         }
 
         .btn-primary {
-            /* primary now white gradient (text remains visible) */
             background: var(--primary-gradient);
             color: #000;
             box-shadow: 0 4px 20px rgba(255,255,255,0.08);
@@ -360,6 +366,14 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .language-selector { flex-direction: column; gap: 1rem; }
@@ -369,52 +383,32 @@
             .text-area-container { border-right: none; border-bottom: 1px solid var(--border-subtle); min-height: 200px; }
             .controls { flex-direction: column-reverse; }
             .btn { width: 100%; }
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 2rem;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            opacity: 0.7;
-        }
 
-        /* Small nav link for Grammar Fixer (common styles already present) */
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
-            color: var(--text-muted);
-        }
-
-        /* Fixed top-right page corner link */
-        .nav-link.page-corner {
-            position: fixed;
-            top: 14px;
-            right: 14px;
-            z-index: 9999;
-            padding: 8px 12px;
-            font-size: 0.95rem;
-            border-radius: 10px;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            transition: transform .15s ease, background .15s ease;
-        }
-
-        .nav-link.page-corner:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,0.06);
-            color: var(--text-main);
-            border-color: rgba(255,255,255,0.08);
+            /* Mobile Navigation Adjustments */
+            .top-nav {
+                position: relative;
+                top: auto;
+                right: auto;
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+                margin-bottom: 0.5rem;
+                padding: 0 1rem;
+            }
+            
+            .nav-link {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- moved: fixed clickable Grammar Fixer link in page corner -->
-    <a href="grammerfixer.html" class="nav-link page-corner" title="Open Grammar Fixer">Grammar Fixer</a>
+    <div class="top-nav">
+        <a href="grammerfixer.html" class="nav-link">Grammar Fixer</a>
+        <a href="sremover.html" class="nav-link">Clean AI Texts</a>
+    </div>
 
     <div class="container">
         <header>
@@ -486,7 +480,7 @@
         </div>
         
         <footer>
-            <p>Using  LLM for high-quality translations that understand context</p>
+            <p>Using LLM for high-quality translations that understand context</p>
         </footer>
     </div>
 
@@ -506,7 +500,7 @@
             const downloadPdfBtn = document.getElementById('downloadPdf');
             const copyBtn = document.getElementById('copyBtn');
 
-            // Language names mapping (Restored Original)
+            // Language names mapping
             const languageNames = {
                 'bn': 'Bangla',
                 'en': 'English',
@@ -528,7 +522,7 @@
                 }
             });
 
-            // Copy to Clipboard Logic (New Feature)
+            // Copy to Clipboard Logic
             copyBtn.addEventListener('click', () => {
                 if(!targetText.value) return;
 
@@ -559,7 +553,7 @@
                 sourceText.focus();
             });
 
-            // Translate Text (Original Fetch Logic Restored)
+            // Translate Text
             translateBtn.addEventListener('click', async function() {
                 const text = sourceText.value.trim();
                 if (!text) {
@@ -613,11 +607,8 @@
                 doc.text(sourceText.value, 10, 40, { maxWidth: 180 });
                 
                 // Add translation
-                // Simple auto-positioning for demo
                 let yPos = 80;
                 try {
-                    // Try to calculate position if autotable isn't present, 
-                    // or just use fixed position for simplicity in this snippet
                     if (doc.autoTable && doc.autoTable.previous) {
                          yPos = doc.autoTable.previous.finalY + 15;
                     }
@@ -630,7 +621,7 @@
                 doc.save(`translation_${fromLang}_to_${toLang}.pdf`);
             });
 
-            // Function to call the Netlify function for translation (Original Logic)
+            // Function to call the Netlify function for translation
             async function translateText(text, fromLang, toLang) {
                 const response = await fetch('/.netlify/functions/translate', {
                     method: 'POST',
